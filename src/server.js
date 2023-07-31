@@ -3,7 +3,7 @@ import { serve } from '@hono/node-server'
 
 import * as app from './index.js'
 
-var PORT = 3000 || process.env.PORT
+var PORT = process.env.PORT || 3000
 
 serve({
   fetch: app.default.fetch,

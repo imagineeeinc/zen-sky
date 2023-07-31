@@ -1,11 +1,12 @@
-import { Hono } from 'hono'
-import { Deta } from 'deta'
-import fetch from 'node-fetch'
-import { DateTime } from 'luxon'
-import * as dotenv from 'dotenv'
-dotenv.config()
+import { Hono } from 'https://deno.land/x/hono/mod.ts'
+import { Deta } from 'https://esm.sh/deta?target=deno'
+/* import fetch from 'node-fetch' */
+import { DateTime } from 'https://esm.sh/luxon'
+/* import * as dotenv from 'dotenv'
+dotenv.config() */
+import "https://deno.land/std@0.196.0/dotenv/load.ts"
 
-const deta = Deta();
+const deta = Deta(Deno.env.get('DETA_PROJECT_KEY'));
 const db = deta.Base('zen-sky')
 const app = new Hono()
 
@@ -29,8 +30,8 @@ app.get('/api/weather', async (c) => {
 	let units = c.req.query('units') || 'metric'
 	let appid = c.req.query('appid') || null
 	// Checks for password
-	if (appid.startsWith("!") && appid == "!" + process.env.PASS) {
-		appid = process.env.OPENWEATHER_API_KEY
+	if (appid.startsWith("!") && appid == "!" + Deno.env.get('PASS')) {
+		appid = Deno.env.get('OPENWEATHER_API_KEY')
 	} else if (appid == null) {
 		// If no appid ask to provide one
 		c.status = 401
@@ -77,4 +78,5 @@ app.get('/api/weather', async (c) => {
 	// response
 	return c.json(out)
 })
+
 export default app
